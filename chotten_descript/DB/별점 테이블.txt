@@ -1,0 +1,10 @@
+create chotten_score (
+	sno number(10) not null,
+	score number(1) not null,
+	content varchar2(140 char) not null,
+	writer varchar2(10 char) not null,
+	regdate date default sysdate
+	mno number(10)
+)
+
+create sequence score_seq
