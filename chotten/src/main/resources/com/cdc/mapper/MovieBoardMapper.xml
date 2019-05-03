@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cdc.mapper.MovieBoardMapper">
+
+	<select id="getMovie" resultType="com.cdc.domain.MovieDTO">
+		select * from chotten_movie where mno = #{mno}
+	</select>
+
+	<insert id="register">
+		insert into chotten_movie (mno, title, poster,content)
+		values (movie_seq.nextval, #{title}, 
+		<choose>
+			<when test='poster != null'>
+				#{poster}
+			</when>
+			<otherwise>
+				null
+			</otherwise>
+		</choose>
+		,#{content})
+	</insert>
+	
+	<delete id="delete">
+		delete from chotten_movie where mno = #{mno}
+	</delete>
+</mapper>

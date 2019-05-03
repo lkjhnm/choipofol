@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.cdc.mapper.ScoreBoardMapper">
+	
+	<select id="getList" resultType="com.cdc.domain.ScoreDTO">
+	select * from chotten_score where mno = #{mno}
+	</select>
+	
+	<select id="tableCount" resultType="java.lang.Integer">
+	select count(*) from chotten_score where mno = #{mno}
+	</select>
+	
+	<select id="getLatestList" resultType="com.cdc.domain.ScoreDTO">
+	<![CDATA[
+	 select sno, score,content,writer, regdate ,hits
+	 from 
+	 	(select /*+ INDEX_DESC (chotten_score pk_score) */ 
+	 	 rownum rn, sno,score, content, writer, regdate, hits from chotten_score
+	 	 where rownum <= #{page} * #{amount} and mno = #{mno}
+	 	)
+	 where rn > (#{page} -1) * #{amount}
+	]]>
+	</select>
+	
+	<select id="getLikeList" resultType="com.cdc.domain.ScoreDTO">
+	<![CDATA[
+	 select sno, score,content,writer, regdate ,hits
+	 from 
+	 	(select
+	 	 rownum rn, sno,score, content, writer, regdate ,hits
+	 	 from(
+	 	 	select * from chotten_score where mno = #{mno} order by score desc , regdate desc 
+	 	 )
+	 	 where rownum <= #{page} * #{amount} 
+	 	)
+	 where rn > (#{page} -1) * #{amount}
+	]]>
+	</select>
+	
+	<select id="getDislikeList" resultType="com.cdc.domain.ScoreDTO">
+	<![CDATA[
+	 select sno, score,content,writer, regdate ,hits
+	 from 
+	 	(select
+	 	 rownum rn, sno,score, content, writer, regdate ,hits
+	 	 from(
+	 	 	select * from chotten_score where mno = #{mno} order by score asc , regdate desc 
+	 	 )
+	 	 where rownum <= #{page} * #{amount} 
+	 	)
+	 where rn > (#{page} -1) * #{amount}
+	]]>
+	</select>
+	
+	
+	
+	<select id="getTotalScore" resultType="java.lang.Integer">
+	select score from chotten_score 
+	</select>
+	
+	<select id="read" resultType="com.cdc.domain.ScoreDTO">
+	select * from chotten_score where sno = #{sno}
+	</select>
+	
+	<insert id="register">
+	insert into chotten_score (sno, score, content, writer, mno)
+	values (score_seq.nextval, #{score}, #{content}, #{writer}, #{mno})
+	</insert>
+	
+	<delete id="delete">
+	delete from chotten_score where sno = #{sno}
+	</delete>
+	
+	<select id="getTotalCount" resultType="int">
+	select count(*) from chotten_score
+	</select>
+	
+</mapper>

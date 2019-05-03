@@ -8,3 +8,6 @@ create chotten_score (
 )
 
 create sequence score_seq
+
+
+++ alter table chotten_score add hits number(6) default 0

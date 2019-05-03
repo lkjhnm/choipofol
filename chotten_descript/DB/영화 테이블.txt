@@ -1,0 +1,8 @@
+create table chotten_movie (
+    mno number(10) primary key,
+    title varchar2(20 char) not null,
+    poster varchar2(100 char) not null, 
+    content varchar2(150 char) )
+
+
+create sequence movie_seq
