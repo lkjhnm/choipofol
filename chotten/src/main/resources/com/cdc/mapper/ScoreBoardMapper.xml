@@ -77,4 +77,8 @@
 	select count(*) from chotten_score
 	</select>
 	
+	<update id="updateHits">
+	update chotten_score set hits = hits+1 where sno = #{sno}
+	</update>
+	
 </mapper>

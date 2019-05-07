@@ -33,8 +33,7 @@ public class SummaryController {
 	
 	@PostMapping("/register")
 	public String register() {
-		
-		
 		return "redirect:/summary/list";
 	}
+	
 }

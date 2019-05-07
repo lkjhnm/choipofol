@@ -28,18 +28,8 @@ public class ScoreBoardServiceImpl implements ScoreBoardService{
 	
 	@Override
 	public List<ScoreDTO> getListWithPaging(PageInfoDTO pageInfo){	//한줄평 기본값 최신순
-		if(pageInfo.isLatest()) {
-			return mapper.getLatestList(pageInfo);	
-		}else if(pageInfo.isLike()) {
-			return mapper.getLikeList(pageInfo);
-		}else {
-			return mapper.getDislikeList(pageInfo);
-		}
-			
-		
+		return getListWithOrder(pageInfo);
 	}
-	
-	
 	
 	@Override
 	public int getTableCount(Long mno) {
@@ -61,6 +51,20 @@ public class ScoreBoardServiceImpl implements ScoreBoardService{
 	public ScoreDTO read(Long sno) {
 		return mapper.read(sno);
 	}
+
+	@Override
+	public int updateHits(Long sno) {
+		return mapper.updateHits(sno);
+	}
 	
+	private List<ScoreDTO> getListWithOrder(PageInfoDTO pageInfo){
+		if(pageInfo.isLatest()) {
+			return mapper.getLatestList(pageInfo);	
+		}else if(pageInfo.isLike()) {
+			return mapper.getLikeList(pageInfo);
+		}else {
+			return mapper.getDislikeList(pageInfo);
+		}
+	}
 	
 }

@@ -167,8 +167,9 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 										<span class='d-flex' style='margin-top:8%'><em><c:out value="${scoreBoard.writer }"/></em>
 										<span class='bar'></span>
 										<em class='mr-auto'><fmt:formatDate value="${scoreBoard.regdate }" pattern="YYYY/MM/dd,  HH:mm "/></em>
-										<button type="button" class="btn btn-outline-danger" style="padding-top:0s">
+										<button type="button" class="btn btn-outline-danger thumbs-up" style="padding-top:0s">
 										<i class="far fa-thumbs-up fa-lg"><c:out value="        ${scoreBoard.hits }"/></i></button>
+										<input type='hidden' class='sno' value='<c:out value="${scoreBoard.sno }"/>'>
 										</span>
 									</div>
 							 </div>
@@ -251,6 +252,7 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 		var latest = '<c:out value="${pageData.pageInfo.latest}"/>';
 		var like = '<c:out value="${pageData.pageInfo.like}"/>';
 		var dislike = '<c:out value="${pageData.pageInfo.dislike}"/>';
+		var mno = "<c:out value='${pageData.pageInfo.mno}'/>";
 		
 		//별 애니메이션 자바스크립트--------------------------------
 		var i;			// mouseover시 점수값
@@ -312,7 +314,7 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 		var register = $(".commentRegister").find("button");
 		
 		
-		var mno = "<c:out value='${pageData.pageInfo.mno}'/>";
+		
 		
 		var str = '';
 		
@@ -325,14 +327,14 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 				return;
 			}
 		
-			str +="<input name='score' type='hidden' value='"+ fix +"'>";
-			str +="<input name='content' type='hidden' value='"+comment+"' >";
-			str +="<input name='writer' type='hidden' value='테스트 작성자0503'>";
 			str +="<input name='mno' type='hidden' value='"+mno+"'>";
 			str +="<input name='page' type='hidden' value='1'>";
 			str +="<input name='latest' type='hidden' value='"+latest+"'>";
 			str +="<input name='like' type='hidden' value='"+like+"'>";
 			str +="<input name='like' type='hidden' value='"+dislike+"'>";
+			str +="<input name='score' type='hidden' value='"+ fix +"'>";
+			str +="<input name='content' type='hidden' value='"+comment+"' >";
+			str +="<input name='writer' type='hidden' value='테스트 작성자0503'>";
 			
 			$(".commentRegister").append(str);
 			$(".commentRegister").submit();
@@ -358,7 +360,7 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 				pageStr +="<input name='page' type='hidden' value='"+pageNum+"'>";
 				pageStr +="<input name='latest' type='hidden' value='"+latest+"'>";
 				pageStr +="<input name='like' type='hidden' value='"+like+"'>";
-				pageStr +="<input name='like' type='hidden' value='"+dislike+"'>";
+				pageStr +="<input name='dislike' type='hidden' value='"+dislike+"'>";
 				
 				
 				$(".pageBtn").append(pageStr);
@@ -394,6 +396,31 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 		$(".pageBtn").append(str);
 		$(".pageBtn").submit();	
 	};
+	
+	//추천 수 증가 --------------------------------------------------------------------------
+	$(".thumbs-up").on('click',function(){
+		
+		var snoVal = $(this).parent().find(".sno").val();
+		var mnoVal = ${pageData.pageInfo.mno};
+		var pageVal = ${pageData.pageInfo.page};
+		var latestVal = ${pageData.pageInfo.latest};
+		var likeVal = ${pageData.pageInfo.like};
+		var dislikeVal = ${pageData.pageInfo.dislike};
+		var str = {mno:mnoVal, page:pageVal, latest:latestVal, like:likeVal, dislike:dislikeVal};
+
+		$.ajax({
+			url:"/oneline/"+snoVal,
+			type:'put',
+			data: JSON.stringify(str),
+			contentType: "application/json; charset=utf-8",
+			success:function(data){
+				if(data == 'success'){
+					alert("추천하였습니다.");	
+					window.location.reload();
+				}
+			}
+		});
+	});
 </script>
 	
 </body>

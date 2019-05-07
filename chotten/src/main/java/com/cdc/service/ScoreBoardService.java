@@ -10,6 +10,7 @@ public interface ScoreBoardService {
 	
 	public List<ScoreDTO> getList(Long mno);
 	public List<ScoreDTO> getListWithPaging(PageInfoDTO pageInfo);
+	public int updateHits(Long sno);
 	public int getTableCount(Long mno);
 	public void register(ScoreDTO scoreDTO);
 	public void delete(Long sno);

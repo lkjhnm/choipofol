@@ -112,7 +112,7 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 		<div class='row' style='margin-top : 7%'> 
 			<div class='col-sm d-flex'>				
 				<h4 class='mr-auto'>한줄평</h4>
-				<a href="#" class="btn btn-outline-primary oneline-btn" role="button">더 보기</a>
+				<a href="#" class="btn btn-outline-primary oneline-btn" id="oneline" role="button">더 보기</a>
 			</div>	
 		</div>
 		
@@ -128,7 +128,7 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 		<div class='row' style='margin-top : 3%'>
 			<div class='col-sm d-flex'>				
 				<h3 class='mr-auto'>리뷰</h3>
-				<a href="#" class="btn btn-outline-primary" role="button">더 보기</a>
+				<a href="#" class="btn btn-outline-primary" id="review" role="button">더 보기</a>
 			</div>	
 		</div>
 		
@@ -164,14 +164,26 @@ $(document).ready(function(){
 	
 	
 	//더 보기 버튼 동작 자바스크립트 -----------------------------------------//더보기 버튼들이 겹치는 경우 코드를 줄일 방법을 생각하자
-	$(".oneline-btn").on("click", function(e){	
+	$(".btn").on("click", function(e){	
 		e.preventDefault();
 		
+		var boundary = $(this).attr("id");
 		var str ="";
-		str += "<input type='hidden' name='mno' value='0'>";    //나중에 바인딩 필요! 테스트를 위해서 기본값 0으로 설정
-		str += "<input type='hidden' name='latest' value='true'>"; //더보기 페이지의 기본값은 최신순
 		
-		$(".moveBtn").attr("action","/oneline/commentView").append(str).submit();
+		switch(boundary){
+		case 'oneline' :
+			$(".moveBtn").attr("action","/oneline/commentView"); // commentView -> list로 변환하자
+			str += "<input type='hidden' name='latest' value='true'>"; //기본값은 최신순
+			break;
+		case 'review' :
+			$(".moveBtn").attr("action","/review/list");
+			str += "<input type='hidden' name='reviewlike' value='true'>";
+			break;
+		}
+
+		str += "<input type='hidden' name='mno' value='0'>";    //나중에 바인딩 필요! 테스트를 위해서 기본값 0으로 설정
+		
+		$(".moveBtn").append(str).submit();
 	});
 	
 });

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.cdc.mapper.ReviewBoardMapper">
+
+	<select id="getList" resultType="com.cdc.domain.ReviewDTO">
+	<![CDATA[
+	select * from 
+	(select rownum rn, rvno, title, content, writer, regdate, updatedate, hits 
+	 from chotten_review where mno= #{pageInfo.mno} and reviewlike = #{reviewlike} and rownum <= #{pageInfo.page} * #{pageInfo.amount}) 
+	where rn > (#{pageInfo.page}-1) * #{pageInfo.amount}
+	]]>
+	</select>
+	
+	<insert id="register">
+	insert into chotten_review (rvno, title, content, writer, mno, reviewlike)  
+	values (review_seq.nextVal, #{title}, #{content}, #{writer}, #{mno}, #{reviewlike})
+	</insert>
+	
+	<select id="getReview" resultType="com.cdc.domain.ReviewDTO">
+	select * from chotten_review where rvno = #{rvno}
+	</select>
+	
+</mapper>

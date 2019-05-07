@@ -11,6 +11,7 @@ public interface ScoreBoardMapper {
 	public List<ScoreDTO> getLatestList(PageInfoDTO pageInfo);
 	public List<ScoreDTO> getLikeList(PageInfoDTO pageInfo);
 	public List<ScoreDTO> getDislikeList(PageInfoDTO pageInfo);
+	public int updateHits(Long sno);
 	public int tableCount(Long mno);
 	public void register(ScoreDTO scoreDTO);
 	public void delete(Long sno);
