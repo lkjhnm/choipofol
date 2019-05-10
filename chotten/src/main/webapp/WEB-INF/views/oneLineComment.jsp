@@ -168,7 +168,7 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 										<span class='bar'></span>
 										<em class='mr-auto'><fmt:formatDate value="${scoreBoard.regdate }" pattern="YYYY/MM/dd,  HH:mm "/></em>
 										<button type="button" class="btn btn-outline-danger thumbs-up" style="padding-top:0s">
-										<i class="far fa-thumbs-up fa-lg"><c:out value="        ${scoreBoard.hits }"/></i></button>
+										<i class="far fa-heart"><c:out value="        ${scoreBoard.hits }"/></i></button>
 										<input type='hidden' class='sno' value='<c:out value="${scoreBoard.sno }"/>'>
 										</span>
 									</div>
@@ -184,7 +184,7 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 			<div class='col-sm'>
 				<ul class="pagination justify-content-center">
 					
-					<li class="page-item"><a class="page-link start" href="1"><i class="fas fa-angle-double-left"></i></a></li>
+					<li class="page-item"><a class="page-link" id='start' href="1"><i class="fas fa-angle-double-left"></i></a></li>
 					
 					<li class="page-item">
 					<a class="page-link pageMove" data-toggle="popover" data-placement="top" data-content="더 이상 이동할 수 없습니다." href="${pageData.pageInfo.page -1 }">
@@ -230,7 +230,7 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 					
 					<li class="page-item"><a class="page-link pageMove" data-toggle="popover" data-content="더 이상 이동할 수 없습니다." data-placement="top"
 					 href="${pageData.pageInfo.page +1 }"><i class="fas fa-angle-right"></i></a></li>
-					<li class="page-item"><a class="page-link" href="${pageData.realEnd}"><i class="fas fa-angle-double-right"></i></a></li>
+					<li class="page-item"><a class="page-link" id='end' href="${pageData.realEnd}"><i class="fas fa-angle-double-right"></i></a></li>
 				
 				</ul>
 			</div>
@@ -353,7 +353,7 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 			var pageNum = $(this).attr("href");	
 			console.log(pageNum);
 			
-			if(pageNum < 1 || pageNum > '<c:out value="${pageData.realEnd}"/>'){				
+			if(pageNum < 1 || pageNum > <c:out value="${pageData.realEnd}"/>){				
 				$('[data-toggle="popover"]').popover();
 				return false;
 			}else{
@@ -367,6 +367,19 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 				$(".pageBtn").submit();				
 			}
 		});
+			
+				//현재 페이지 버튼 색깔 --------------------------------
+				
+				$(".page-link").each(function(){
+					var page = '<c:out value="${pageData.pageInfo.page}"/>';
+					var needColor = $(this).attr("href");
+					var start = $(this).attr("id");
+					var end = $(this).attr("id");
+						
+					if(page == needColor && !start && !end ){
+						$(this).css("background-color","#9DE4FF");
+					}
+				});
 		//--------------------------------------------------
 		
 		//정렬 조건 버튼 자바스크립트 --------------------------------

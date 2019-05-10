@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cdc.domain.PageInfoDTO;
-import com.cdc.domain.ReviewDTO;
+import com.cdc.domain.ReviewVO;
 import com.cdc.mapper.ReviewBoardMapper;
 
 import lombok.Data;
@@ -20,18 +20,33 @@ public class ReviewBoardServiceImpl implements ReviewBoardService{
 	private ReviewBoardMapper mapper;
 
 	@Override
-	public List<ReviewDTO> getList(PageInfoDTO pageInfo,boolean reviewlike) {
+	public List<ReviewVO> getList(PageInfoDTO pageInfo,boolean reviewlike) {
 		return mapper.getList(pageInfo,reviewlike);
 	}
 	
 	@Override
-	public void register(ReviewDTO reviewDTO) {
-		mapper.register(reviewDTO);
+	public int count(Long mno, boolean reviewlike) {
+		return mapper.count(mno,reviewlike);
+	}
+	
+	
+	@Override
+	public void register(ReviewVO reviewVO) {
+		mapper.register(reviewVO);
 	}
 	
 	@Override
-	public ReviewDTO getReview(Long rvno) {
+	public ReviewVO getReview(Long rvno) {
 		return mapper.getReview(rvno);
 	}
 	
+	@Override
+	public void modify(ReviewVO reviewVO) {
+		mapper.modify(reviewVO);
+	}
+	
+	@Override
+	public void delete(Long rvno) {
+		mapper.delete(rvno);
+	}
 }

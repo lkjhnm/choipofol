@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cdc.mapper.ReplyBoardMapper">
+
+	<select id="getList" resultType="com.cdc.domain.ReplyDTO">
+	<![CDATA[
+	select  rno,content,writer,regdate ,rvno
+	from (select /*+ INDEX_ASC  */ rownum rn, rno,content,writer,regdate, rvno 
+		  from chotten_reply where rvno = #{rvno} and rownum <= #{pageInfo.page} * #{pageInfo.amount} ) 
+		  where rn > (#{pageInfo.page}-1) * #{pageInfo.amount}
+	]]>
+	</select>
+	
+	<insert id="register">
+	insert into chotten_reply (rno,content, writer, rvno) values (reply_seq.nextval, #{content}, #{writer}, #{rvno})
+	</insert>
+</mapper>
