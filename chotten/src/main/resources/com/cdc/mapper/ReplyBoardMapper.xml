@@ -6,12 +6,17 @@
 
 	<select id="getList" resultType="com.cdc.domain.ReplyDTO">
 	<![CDATA[
-	select  rno,content,writer,regdate ,rvno
-	from (select /*+ INDEX_ASC  */ rownum rn, rno,content,writer,regdate, rvno 
+	select  rno,content,writer,to_char(regdate,'YYYY/MM/DD') AS regdate ,rvno
+	from (select /*+ INDEX(chotten_reply pk_reply)  */ rownum rn, rno,content,writer,regdate, rvno 
 		  from chotten_reply where rvno = #{rvno} and rownum <= #{pageInfo.page} * #{pageInfo.amount} ) 
 		  where rn > (#{pageInfo.page}-1) * #{pageInfo.amount}
 	]]>
 	</select>
+	
+	<select id="getCount" resultType="java.lang.Integer">
+	select count(*) from chotten_reply where rvno = #{rvno}
+	</select>
+	
 	
 	<insert id="register">
 	insert into chotten_reply (rno,content, writer, rvno) values (reply_seq.nextval, #{content}, #{writer}, #{rvno})

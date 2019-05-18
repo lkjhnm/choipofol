@@ -11,4 +11,5 @@ public interface ReplyBoardMapper {
 	
 	public List<ReplyDTO> getList(@Param("rvno") Long rvno,@Param("pageInfo") PageInfoDTO page);
 	public int register(ReplyDTO replyDTO);
+	public int getCount(Long rvno);
 }

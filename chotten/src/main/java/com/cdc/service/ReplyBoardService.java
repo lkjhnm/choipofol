@@ -1,12 +1,11 @@
 package com.cdc.service;
 
-import java.util.List;
-
 import com.cdc.domain.PageInfoDTO;
 import com.cdc.domain.ReplyDTO;
+import com.cdc.domain.ReplyPageDTO;
 
 public interface ReplyBoardService {
 	
-	public List<ReplyDTO> getList(Long rvno,PageInfoDTO pageInfo);
+	public ReplyPageDTO getListWithPaging(Long rvno,PageInfoDTO pageInfo);
 	public int register(ReplyDTO replyDTO);
 }

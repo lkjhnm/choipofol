@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cdc.domain.PageInfoDTO;
 import com.cdc.domain.ReplyDTO;
+import com.cdc.domain.ReplyPageDTO;
 import com.cdc.service.ReplyBoardService;
 
 import lombok.Data;
@@ -33,14 +34,11 @@ public class ReplyController {
 	@RequestMapping(value="/list/{rvno}/{page}",
 					method= {RequestMethod.GET},
 					produces= {MediaType.APPLICATION_JSON_UTF8_VALUE})
-	public ResponseEntity<List<ReplyDTO>> replyGet(@PathVariable("rvno") Long rvno, @PathVariable("page") Long page){
+	public ResponseEntity<ReplyPageDTO> replyGet(@PathVariable("rvno") Long rvno, @PathVariable("page") Long page){
 		
-		PageInfoDTO pageInfo = new PageInfoDTO(page,10l);
-		log.info(rvno +" " + page);
+		PageInfoDTO pageInfo = new PageInfoDTO(page,5l);
 		
-		log.info(service.getList(rvno, pageInfo));
-		
-		return new ResponseEntity<List<ReplyDTO>>(service.getList(rvno, pageInfo),HttpStatus.OK);
+		return new ResponseEntity<ReplyPageDTO>(service.getListWithPaging(rvno, pageInfo),HttpStatus.OK);
 	}
 	
 	

@@ -104,14 +104,18 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 		  </div>
 		</div>
 		
-		<label style="margin-top:5%; padding-left:1%; font-size:22px">댓 글   ???개</label>
+		<label class="count" style="margin-top:5%; padding-left:1%; font-size:22px">댓 글   0개</label>
 		<div class='row'>
 			<div class='col-sm'>
 				<ul class="list-group">
 				</ul>
 			</div>
 		</div>
-	
+		
+		<div class='row d-flex justify-content-center'>
+			<ul class="pagination">
+			</ul>
+		</div>
 	</div>
 	
 	
@@ -127,7 +131,6 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 			var page ='<c:out value="${page}"/>';
 			
 		//-------------------------------------------------------------------------------
-		
 		
 		// 버튼 자바 스크립트----------------------------------------------------------------
 		$(".btn.btn-outline-primary").on("click",function(e){
@@ -165,6 +168,9 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 		
 		//ajax-----------------------------------------------------------------------------
 		var rvno = "<c:out value='${review.rvno }'/>";
+		var replyCnt =0;
+		
+		getReply();
 		
 		$("button[id='register']").on("click",function(){
 			
@@ -187,37 +193,116 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 		});
 		
 		
-		function getReply(){
+		function getReply(page){
+			
+			if(!page){
+				page = 1;
+			}
 			
 			$.ajax({
-				url : "/reply/list/"+rvno+"/1",
+				url : "/reply/list/"+rvno+"/"+page,
 				type : "get",
 				dataType:'json',
 				success : function(data){
+					replyShow(data);
+					replyPaging(page);
+					pageSelected(page);
 					
-					$(data).each(function(){
-
-						console.log($(this)[0].writer);
-						var str ="";
-						
-						str += "<li class='list-group-item'>";
-						str += "<div class='row'>";
-						str += "<div class='col-sm'";
-						str += "<p id='writer' style='margin-bottom:3px'>"+$(this)[0].writer+"</p>";
-						str += "<p id='content' style='margin-bottom:5px'>"+$(this)[0].content+"</p>";
-						str += "<span style='font-size:13px'>"+$(this)[0].regDate+"</span></div></div></li>";
-						
-						$(".list-group").append(str);
+					$(".page-link").on("click",function(e){
+						e.preventDefault();
+						var pageNum = $(this).attr("href");
+						console.log(pageNum);
+						$(".list-group").html("");
+						$(".pagination").html("");
+						getReply(pageNum);	
 					});
+					
+					
 				}
 			});
+			
 		}
 		
-		getReply();
+		function replyShow(data){
+			replyCnt = data.replyCnt;
+			$(".count").text("댓 글\u00A0\u00A0\u00A0" + replyCnt+"개");	//\u00A0 공백 넣기
+			
+			$(data.list).each(function(){
+				
+				var str ="";
+				
+				str += "<li class='list-group-item'>";
+				str += "<div class='row'>";
+				str += "<div class='col-sm'";
+				str += "<p id='writer' style='margin-bottom:3px'>"+$(this)[0].writer+"</p>";
+				str += "<p id='content' style='margin-bottom:5px'>"+$(this)[0].content+"</p>";
+				str += "<span style='font-size:13px'>"+$(this)[0].regDate+"</span></div></div></li>";
+				
+				$(".list-group").append(str);
+			});			
+		}
+		
+		
+		function replyPaging(page){
+			
+			if(replyCnt == 0){
+				return false;
+			}
+			
+			var nowPage = page*1;
+			var previous = nowPage-1;
+			var next = nowPage+1;
+			var endPage = Math.ceil(replyCnt/5);
+			
+			if(previous <=0){
+				previous = 1;
+			}
+			if(next >= endPage){
+				next = endPage;
+			}
+			
+			var str ="<li class='page-item'><a class='page-link start' href='1'><i class='fas fa-angle-double-left'></i></a></li>";
+			  	str += "<li class='page-item'><a class='page-link prev' href='"+previous+"'><i class='fas fa-angle-left'></i></a></li>";
+			
+			if(endPage <=5){			
+				for(var i=1; i<=endPage; i++){
+					str += "<li class='page-item'><a class='page-link' href='"+i+"'>"+i+"</a></li>";
+				}
+			}else{
+				if(nowPage <= 3){
+					for(var i=1; i<=5; i++){
+						str += "<li class='page-item'><a class='page-link' href='"+i+"'>"+i+"</a></li>";
+					}
+				}else{
+					if(endPage - nowPage <= 2){
+						for(var i=endPage-4; i<=endPage; i++){
+							str += "<li class='page-item'><a class='page-link' href='"+i+"'>"+i+"</a></li>";
+						}
+					}else{
+						for(var i=nowPage-2; i<=nowPage+2; i++){
+							str += "<li class='page-item'><a class='page-link' href='"+i+"'>"+i+"</a></li>";
+						}
+					}	
+				}
+			}
+			
+			str += "<li class='page-item'><a class='page-link next' href='"+next+"'><i class='fas fa-angle-right'></i></a></li>";
+			str += "<li class='page-item'><a class='page-link end' href='"+endPage+"'><i class='fas fa-angle-double-right'></i></a></li>";
+			
+			$(".pagination").append(str);
+		}
+		
+		function pageSelected(page){
+			$(".page-link[href='"+page+"']").css("background-color","#9DE4FF");
+			$(".start").css("background-color","transparent");
+			$(".next").css("background-color","transparent");
+			$(".prev").css("background-color","transparent");
+			$(".end").css("background-color","transparent");
+		}
+		
 		
 	});
-	
-	
+				
 </script>
 </body>
 </html>

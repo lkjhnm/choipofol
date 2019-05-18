@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.cdc.domain.PageInfoDTO;
 import com.cdc.domain.ReplyDTO;
+import com.cdc.domain.ReplyPageDTO;
 import com.cdc.mapper.ReplyBoardMapper;
 
 import lombok.Data;
@@ -22,9 +23,9 @@ public class ReplyBoardServiceImpl implements ReplyBoardService{
 	private ReplyBoardMapper mapper;
 	
 	@Override
-	public List<ReplyDTO> getList(Long rvno, PageInfoDTO pageInfo) {
+	public ReplyPageDTO getListWithPaging(Long rvno, PageInfoDTO pageInfo) {
 		
-		return mapper.getList(rvno,pageInfo);
+		return new ReplyPageDTO(mapper.getList(rvno, pageInfo),mapper.getCount(rvno));
 	}
 
 	@Override
@@ -32,7 +33,5 @@ public class ReplyBoardServiceImpl implements ReplyBoardService{
 		
 		return mapper.register(replyDTO);
 	}
-	
-	
 	
 }

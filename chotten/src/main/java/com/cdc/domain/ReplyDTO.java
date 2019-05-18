@@ -10,7 +10,7 @@ public class ReplyDTO {
 	private Long rno;
 	private String content;
 	private String writer;
-	private Date regDate;
+	private String regDate;
 	private Long rvno;
 	
 }
