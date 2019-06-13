@@ -2,25 +2,17 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix='c' uri='http://java.sun.com/jsp/jstl/core' %>
 <%@ taglib prefix='fmt' uri='http://java.sun.com/jsp/jstl/fmt' %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"  
-integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-<link href="https://fonts.googleapis.com/css?family=Gugi|Nanum+Pen+Script" rel="stylesheet">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <meta charset="UTF-8">
 <title>리뷰 작성하기</title>
 </head>
 <body>
 
-	<%--헤더 컨테이너 --%>
-	<div class='jumbotron text-center' style="margin-botton:0">
-	</div>
+
+	<jsp:include page="../header.jsp"/>
 	
 	 <%--메인 컨텐츠 컨테이너 --%>
 	<div class='container font-weight-bold' style ='margin-top:7%; padding-left:8%; padding-right:8%; font-family:Nanum Pen Script;'>
@@ -84,13 +76,21 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 			
 			<div class="form-group">
 			  <label>내 용</label>
-			  <textarea class="form-control" rows='8' id='review' name='content' style="display:none;font-size:25px" readonly="readonly">${review.content }</textarea>
+				<div class="border border-secondary rounded-lg" style="min-height: 500px; padding:20px">
+					${review.content }
+				</div>
 			</div>
 			
-			<div class="form-group">
-				<button type="submit" class="btn btn-outline-primary btn-lg" id='modify' style="float:right">수정하기</button>		
-				<input type='hidden' name='rvno' value='<c:out value="${review.rvno }"/>' >
-			</div>
+			<sec:authorize access='isAuthenticated()'>
+				<sec:authentication property='principal' var='user'/>
+				<sec:authorize access="hasRole('ROLE_MASTER')" var='role'/>
+				<c:if test="${role || user.member.userid eq review.writer }">
+					<div class="form-group">
+						<button type="submit" class="btn btn-outline-primary btn-lg" id='modify' style="float:right">수정하기</button>		
+						<input type='hidden' name='rvno' value='<c:out value="${review.rvno }"/>' >
+					</div>
+				</c:if>
+			</sec:authorize>
 		</form>
 		
 		<div class='row' style='margin-top:18%'>
@@ -124,6 +124,7 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 	</div>
 	
 <script>
+	console.log('${user.authorities}');
 	$(document).ready(function(){
 		// 공통 변수 ------------------------------------------------------------------------
 			var mno = '<c:out value="${review.mno}"/>';
@@ -216,11 +217,9 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 						$(".pagination").html("");
 						getReply(pageNum);	
 					});
-					
-					
+
 				}
 			});
-			
 		}
 		
 		function replyShow(data){

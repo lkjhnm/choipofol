@@ -1,25 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix='c' uri='http://java.sun.com/jsp/jstl/core' %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"  
-integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-<link href="https://fonts.googleapis.com/css?family=Gugi|Nanum+Pen+Script" rel="stylesheet">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <meta charset="UTF-8">
 <title>리뷰 작성하기</title>
 </head>
 <body>
 
-	<%--헤더 컨테이너 --%>
-	<div class='jumbotron text-center' style="margin-botton:0">
-	</div>
+	<jsp:include page="../header.jsp"/>
+	<sec:authentication property='principal' var='user'/>
 	
 	 <%--메인 컨텐츠 컨테이너 --%>
 	<div class='container font-weight-bold' style ='margin-top:7%; padding-left:8%; padding-right:8%; font-family:Nanum Pen Script;'>
@@ -72,17 +64,17 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 				<div class='col-sm-4'>
 					 <div class="form-group">
 					  <label>작성자</label>
-					  <input type="text" class="form-control" name='writer' value="테스트 작성자" readonly="readonly" >
+					  <input type="text" class="form-control" name='writer' value="${user.member.userid }" readonly="readonly" >
 					</div>	
 				</div>
 			</div>
 			
 			<div class="form-group">
 			  <label>내 용</label>
-			  <textarea class="form-control" maxlength="1000" rows="10" name='content' style='font-size:27px'></textarea>
+			  <textarea name='content' id="ir1" rows="10" cols="135" ></textarea>
 			</div>
 		
-			<button type="submit" class="btn btn-outline-primary btn-lg" style="float:right">등록하기</button>		
+			<button type="submit" class="btn btn-outline-secondary btn-lg" style="float:right" >등록하기</button>		
 		</form>
 		
 		
@@ -95,14 +87,28 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 	</div>
 	
 <script>
+	
 	$(document).ready(function(){
 		// 공통 변수 ------------------------------------------------------------------------
 			var mno = '<c:out value="${pageInfo.mno}"/>';
 			var reviewlike = '<c:out value="${reviewLike}"/>';
 			var page = '<c:out value="${pageInfo.page}"/>';
+			var oEditors = [];
 			
 		//-------------------------------------------------------------------------------
 		
+		// 에디터 자바 스크립트----------------------------------------------------------------
+		
+		nhn.husky.EZCreator.createInIFrame({
+			oAppRef: oEditors,
+			elPlaceHolder:"ir1",
+			sSkinURI: "/resources/editor/SmartEditor2Skin.html",
+			fCreator: "createSEditor2"
+		});	
+					
+		
+		
+		//------------------------------------------------------------------------------
 		
 		// 버튼 자바 스크립트----------------------------------------------------------------
 		$(".btn").on("click",function(e){
@@ -117,6 +123,8 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 				str += "<input type='hidden' name='page' value='"+page+"'>";
 				
 				$(".actionForm").html(" ").append(str).submit();
+			}else if(type == 'logout'){
+			
 			}else{
 				
 				if(nullCheck()){
@@ -130,7 +138,6 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 		});
 		//---------------------------------------------------------------------------------
 		
-		
 		//폼 요소 널값 체크----------------------------------------------------------------------
 		function nullCheck(){
 			
@@ -138,7 +145,10 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 				alert("제목을 입력하세요!");
 				return true;
 			}
-			if(!$("textarea").val()){
+			
+			oEditors.getById["ir1"].exec("UPDATE_CONTENTS_FIELD", []);
+			var textArea = $("#ir1").val();
+			if(textArea == "<p><br></p>"){
 				alert("본문을 입력하세요!");
 				return true;
 			}
@@ -149,6 +159,7 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 			}
 		};	
 		//---------------------------------------------------------------------------------
+		
 	});
 	
 </script>

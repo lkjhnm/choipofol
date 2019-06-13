@@ -4,13 +4,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" 
-integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <meta charset="UTF-8">
 
 <style>
@@ -35,11 +28,13 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 <title>영화 요약 페이지</title>
 </head>
 <body>
-	<div class='jumbotron text-center' style="margin-botton:0">  <!-- 헤더 컨테이너 -->
-	</div>
+	
+	<jsp:include page="header.jsp"/>
+	
 	<div class='container' style ='margin-top:30px'> <!-- 메인 컨텐츠 컨테이너 -->
-			
-		<div class='row'>	<!-- 영화포스터 / 요약 정보 -->
+	
+			<!-- 영화포스터 / 요약 정보 -->
+		<div class='row'>	
 			<div class='col-sm-3'>
 				<div class='fakeimg' style='height:350px'>영화포스터</div>
 			</div>
@@ -48,64 +43,80 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 			</div>
 		</div>
 	
-			<div class='row' style='margin-top:5%'> <!-- 배우/감독 (타이틀) -->
-				<div class='col-sm d-flex'>				
-					<h4 class='mr-auto'>감독 및 배우</h4>
-					<a href="#" class="btn btn-outline-primary" role="button">더 보기</a>
-				</div>
+		<!-- 배우/감독 (타이틀) -->
+		<div class='row' style='margin-top:5%'> 
+			<div class='col-sm d-flex'>				
+				<h4 class='mr-auto'>감독 및 배우</h4>
+				<a href="#" class="btn btn-outline-primary" role="button">더 보기</a>
 			</div>
-			
-			<div class='row'> <!-- 배우/감독 사진 -->
-				<div class='col-sm'>
-					<div class='fakeimg' style='height:220px'>배우 및 감독사진</div>
-				</div>
-				<div class='col-sm'>
-					<div class='fakeimg' style='height:220px'>배우 및 감독사진</div>
-				</div>
-				<div class='col-sm'>
-					<div class='fakeimg' style='height:220px'>배우 및 감독사진</div>
-				</div>
-				<div class='col-sm'>
-					<div class='fakeimg' style='height:220px'>배우 및 감독사진</div>
-				</div>
-				<div class='col-sm'>
-					<div class='fakeimg' style='height:220px'>배우 및 감독사진</div>
-				</div>
-			</div>
+		</div>
 		
-			
-			<!-- 영화관련 사진 슬라이드쇼 -->
-			<div class='row justify-content-center' style="margin-top:5%" > 
-				<div id="demo" class="carousel slide" data-ride="carousel" style="width:80%">
-				 <!-- Indicators -->
-				  <ul class="carousel-indicators">
-				    <li data-target="#demo" data-slide-to="0" class="active"></li>
-				    <li data-target="#demo" data-slide-to="1"></li>
-				    <li data-target="#demo" data-slide-to="2"></li>
-				  </ul>
-				
-				  <!-- The slideshow -->
-				  <div class="carousel-inner text-center">
-				    <div class="carousel-item active">
-				      <img src="/resources/img/default.png" alt="Los Angeles">
-				    </div>
-				    <div class="carousel-item">
-				      <img src="/resources/img/default.png" alt="Chicago">
-				    </div>
-				    <div class="carousel-item">
-				      <img src="/resources/img/default.png" alt="New York">
-				    </div>
-				  </div>
-				
-				  <!-- Left and right controls -->
-				  <a class="carousel-control-prev" href="#demo" data-slide="prev">
-				    <i class="fas fa-caret-left fa-5x"></i>
-				  </a>
-				  <a class="carousel-control-next" href="#demo" data-slide="next">
-				    <i class="fas fa-caret-right fa-5x"></i>
-				  </a>
-				</div>
+		<!-- 배우/감독 사진 -->
+		<div class='row'> 
+			<div class='col-sm'>
+				<div class='fakeimg' style='height:220px'>배우 및 감독사진</div>
 			</div>
+			<div class='col-sm'>
+				<div class='fakeimg' style='height:220px'>배우 및 감독사진</div>
+			</div>
+			<div class='col-sm'>
+				<div class='fakeimg' style='height:220px'>배우 및 감독사진</div>
+			</div>
+			<div class='col-sm'>
+				<div class='fakeimg' style='height:220px'>배우 및 감독사진</div>
+			</div>
+			<div class='col-sm'>
+				<div class='fakeimg' style='height:220px'>배우 및 감독사진</div>
+			</div>
+		</div>
+		
+		
+		<!-- 영화 예고편 -->
+		<div class='row'>
+			<div class='col-sm' style="height:300px; position:relative">
+				<video width="500px" height="300px" controls>	
+					<source  src="/summary/display" type="video/mp4">		
+				</video>
+				<form action="/summary/uploadTrailer" method="post" enctype="multipart/form-data">
+					<input type="file" name="trailer" style="position:absolute; top:50%; left:50%">
+					<button type="submit" id="upload" style="position:absolute; top:60%; left:50%">업로드</button>
+				</form>
+			</div>
+		</div>
+	
+		
+		<!-- 영화관련 사진 슬라이드쇼 -->
+		<div class='row justify-content-center' style="margin-top:5%" > 
+			<div id="demo" class="carousel slide" data-ride="carousel" style="width:80%">
+			 <!-- Indicators -->
+			  <ul class="carousel-indicators">
+			    <li data-target="#demo" data-slide-to="0" class="active"></li>
+			    <li data-target="#demo" data-slide-to="1"></li>
+			    <li data-target="#demo" data-slide-to="2"></li>
+			  </ul>
+			
+			  <!-- The slideshow -->
+			  <div class="carousel-inner text-center">
+			    <div class="carousel-item active">
+			      <img src="/resources/img/default.png" alt="Los Angeles">
+			    </div>
+			    <div class="carousel-item">
+			      <img src="/resources/img/default.png" alt="Chicago">
+			    </div>
+			    <div class="carousel-item">
+			      <img src="/resources/img/default.png" alt="New York">
+			    </div>
+			  </div>
+			
+			  <!-- Left and right controls -->
+			  <a class="carousel-control-prev" href="#demo" data-slide="prev">
+			    <i class="fas fa-caret-left fa-5x"></i>
+			  </a>
+			  <a class="carousel-control-next" href="#demo" data-slide="next">
+			    <i class="fas fa-caret-right fa-5x"></i>
+			  </a>
+			</div>
+		</div>
 		
 		
 		<!-- 한줄평 타이틀 -->
@@ -157,14 +168,14 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 $(document).ready(function(){
 	var poster = '<c:out value="${movie.poster}" />';
 	
+	
 	if(!poster){
 		console.log("들어왔다");
 		$(".moviePoster").attr("src","/resources/img/default.png");	
 	}
 	
-	
 	//더 보기 버튼 동작 자바스크립트 -----------------------------------------//더보기 버튼들이 겹치는 경우 코드를 줄일 방법을 생각하자
-	$(".btn").on("click", function(e){	
+	$(".btn-outline-primary").on("click", function(e){	
 		e.preventDefault();
 		
 		var boundary = $(this).attr("id");
@@ -186,6 +197,7 @@ $(document).ready(function(){
 		$(".moveBtn").append(str).submit();
 	});
 	
+	console.log($("video"));
 });
 </script>
 </body>

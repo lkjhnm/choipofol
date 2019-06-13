@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cdc.mapper.MemberMapper">
+
+	<resultMap type="com.cdc.domain.MemberDTO" id="memberMap">
+		<id property="userid" column="userid"/>
+		<result property="userpw" column="userpw"/>
+		<result property="userName" column="username"/>
+		<result property="userEmail" column="useremail"/>
+		<result property="regDate" column="regdate"/>
+		
+		<collection property="tasteList" resultMap="tasteMap"/>
+		<collection property="authList" resultMap="authMap"/>
+	</resultMap>
+	
+	<resultMap type="com.cdc.domain.MovieTasteDTO" 	id="tasteMap">
+		<result property="userid" column="userid"/>
+		<result property="taste" column="taste"/>
+	</resultMap>
+	
+	<resultMap type="com.cdc.domain.AuthVO" id="authMap">
+		<result property="userid" column="userid"/>
+		<result property="auth" column="auth"/>
+	</resultMap>
+	
+	<select id="read" resultMap="memberMap">
+		select mem.userid, userpw, username, useremail, to_char(regdate) as regdate, taste, auth
+			
+		from CHOTTEN_MEMBER mem LEFT OUTER JOIN CHOTTEN_MEMBER_TASTE tas ON mem.userid = tas.userid
+			 LEFT OUTER JOIN CHOTTEN_MEMBER_AUTH auth on mem.userid = auth.userid
+		where
+			mem.userid = #{userid} 
+	</select>
+	
+	<select id="check" resultType="com.cdc.domain.MemberDTO">
+		select userid 
+		from CHOTTEN_MEMBER
+		where userid = #{userid}
+	</select>
+	
+	<insert id='signup' parameterType="com.cdc.domain.MemberDTO">
+		insert all
+		into CHOTTEN_MEMBER (userid,userpw,username,useremail) values (#{userid}, #{userpw}, #{userName}, #{userEmail})   
+		<foreach collection="tasteList" item="item"> 
+			into CHOTTEN_MEMBER_TASTE (userid, taste) values (#{item.userid} , #{item.taste}) 
+		</foreach> 
+	    <foreach collection="authList" item="item"> 
+			into CHOTTEN_MEMBER_AUTH (userid, auth) values (#{item.userid} , #{item.auth}) 
+		</foreach> 
+		select * from dual		
+	</insert>
+	
+</mapper>

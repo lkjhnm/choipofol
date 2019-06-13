@@ -4,6 +4,7 @@ package com.cdc.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +31,7 @@ public class OneLineController {	//한줄평 페이지 컨트롤러
 	@Setter(onMethod_= {@Autowired})
 	private ScoreBoardService scoreService;
 	
+	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/register")
 	public String commentRegister(ScoreDTO scoreDTO, PageInfoDTO pageInfo) {
 		log.info(scoreDTO);

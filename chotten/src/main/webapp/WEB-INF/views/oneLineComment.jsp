@@ -1,19 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
- 
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" 
-integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta charset="UTF-8">
 <style>
@@ -69,9 +62,8 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 <title>별점 한줄평 페이지</title>
 </head>
 <body>
-	<%--헤더 컨테이너 --%>
-	<div class='jumbotron text-center' style="margin-botton:0">
-	</div>
+	
+	<jsp:include page="header.jsp"/>
 	
 	 <%--메인 컨텐츠 컨테이너 --%>
 	<div class='container' style ='margin-top:30px'>
@@ -111,11 +103,15 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 			<div class='col-sm-9' style='padding-left : 0'>
 			   	<form action="/oneline/register" class="commentRegister" method='post'>
 					<div class="input-group mb-3 input-group-lg">
-					  <input type="text" class="form-control"  maxlength='140'  placeholder="한줄평을 작성해 주세요. 최대  140자">
+					  <input type="text" class="form-control"  maxlength='140'  placeholder="한줄평을 작성해 주세요. 최대  140자" id="commentBox">
 					  <div class="input-group-prepend">
 					    <button class="btn btn-outline-primary" type="button">등  록</button> 
 					  </div>
 					</div>
+					<sec:authorize access="isAuthenticated()" var="isAnony" >
+						<sec:authentication property="principal" var="user"/>
+						<input type='hidden' name='writer' value='${user.member.userid }'/>
+					</sec:authorize>
 				</form>
 		    </div>	
 	   </div>
@@ -257,7 +253,7 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 		//별 애니메이션 자바스크립트--------------------------------
 		var i;			// mouseover시 점수값
 		var tmp;		// mouseleave시 빨간색 별 width 고정값
-		var fix;		// mouseleave시 점수 고정 값
+		var fix=0;		// mouseleave시 점수 고정 값
 	
 		$(".star-button button").on("mouseover",function(){
 			i = $(this).attr('title');
@@ -272,7 +268,6 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 			}
 			
 			$(".star-color").css("width",i+"%");
-			
 		});
 		
 		
@@ -320,12 +315,14 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 		
 		register.on("click",function(){
 			
-			var comment = $(".commentRegister").find("input").val();
+			var comment = $("#commentBox").val();
 			
 			if(!comment){
 				alert("한줄평을 입력해 주세요");
 				return;
 			}
+			
+			
 		
 			str +="<input name='mno' type='hidden' value='"+mno+"'>";
 			str +="<input name='page' type='hidden' value='1'>";
@@ -334,7 +331,6 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 			str +="<input name='like' type='hidden' value='"+dislike+"'>";
 			str +="<input name='score' type='hidden' value='"+ fix +"'>";
 			str +="<input name='content' type='hidden' value='"+comment+"' >";
-			str +="<input name='writer' type='hidden' value='테스트 작성자0503'>";
 			
 			$(".commentRegister").append(str);
 			$(".commentRegister").submit();
@@ -388,7 +384,6 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 	
 	function displayOrder(condition){
 		
-		console.log("함수 실행됐다");
 		event.preventDefault();
 		
 		switch(condition){
@@ -433,6 +428,10 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 				}
 			}
 		});
+	});
+	
+	$("#commentBox").on("focus",function(){
+		isAnony();
 	});
 </script>
 	

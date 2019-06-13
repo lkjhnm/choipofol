@@ -2,17 +2,10 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" 
-integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-<link href="https://fonts.googleapis.com/css?family=Gugi|Nanum+Pen+Script" rel="stylesheet">
 <meta charset="UTF-8">
 
 <style>
@@ -24,11 +17,10 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 </head>
 <body>
 
-	<%--헤더 컨테이너 --%>
-	<div class='jumbotron text-center' style="margin-botton:0">
-	</div>
+	<jsp:include page="../header.jsp"/>
+	<sec:authorize access="isAnonymous()" var='isAnony'/>
 	
-	 <%--메인 컨텐츠 컨테이너 --%>
+	<%--메인 컨텐츠 컨테이너 --%>
 	<div class='container' style ='margin-top:10%'>
 		
 		<%-- 영화포스터 / 요약 정보 --%>
@@ -49,7 +41,7 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 		 	   <a class="dropdown-item" id="dislike" href="#"><i class="far fa-thumbs-down"></i> 노 잼</a>
 			</div>
 			<span class='order-by'></span>
-		  <button type='button' class='btn btn-primary write' style='float:right'>작성하기</button>
+		  <button type='button' class='btn btn-primary write' style='float:right' id="writeBtn">작성하기</button>
 		</div>
 		
 		<%-- 리뷰 리스트 --%>
@@ -200,6 +192,18 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 		// 작성 버튼 자바스크립트---------------------------------------------------------------
 		
 		$(".write").on("click",function(){
+			
+			if(isAnony()){
+				var url = "<input type='hidden' name='url' value='/review/register'/>";
+				url += "<input type='hidden' name='mno' value='"+mno+"'>";
+				url += "<input type='hidden' name='reviewlike' value='"+reviewlike+"'>";
+				url += "<input name='page' type='hidden' value='"+page+"'>";
+				if(!($("#loginForm").attr("url"))){
+					$("#loginForm").append(url);
+				}
+				return;
+			}
+			
 			var str =""; 
 			str += "<input type='hidden' name='mno' value='"+mno+"'>";
 			str += "<input type='hidden' name='reviewlike' value='"+reviewlike+"'>";
@@ -236,7 +240,6 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 			console.log(pageNum);
 			
 			if(pageNum < 1 || pageNum > <c:out value="${pageData.realEnd}"/> ){	
-				console.log("어디로갓니?");
 				$('[data-toggle="popover"]').popover();
 				return false;
 			}else{
@@ -262,7 +265,6 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 			});
 		
 		//--------------------------------------------------
-		
 		
 	});
 		
