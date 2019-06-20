@@ -76,7 +76,7 @@
 			
 			<div class="form-group">
 			  <label>내 용</label>
-				<div class="border border-secondary rounded-lg" style="min-height: 500px; padding:20px">
+				<div class="border border-secondary rounded-lg" style="min-height: 500px; padding:20px; overflow:scroll">
 					${review.content }
 				</div>
 			</div>
@@ -124,7 +124,7 @@
 	</div>
 	
 <script>
-	console.log('${user.authorities}');
+
 	$(document).ready(function(){
 		// 공통 변수 ------------------------------------------------------------------------
 			var mno = '<c:out value="${review.mno}"/>';
@@ -155,17 +155,6 @@
 			}	
 		});
 		//---------------------------------------------------------------------------------
-		
-		var content = $("textarea[id='review']").val();
-		
-		(function(){
-			if(content.length > 357){
-				var row = content.length/50;
-				$("textarea[id='review']").attr("rows", row+1);
-			}				
-			$("textarea[id='review']").show();
-		})();
-		
 		
 		//ajax-----------------------------------------------------------------------------
 		var rvno = "<c:out value='${review.rvno }'/>";

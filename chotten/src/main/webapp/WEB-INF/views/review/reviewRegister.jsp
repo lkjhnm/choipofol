@@ -12,7 +12,6 @@
 
 	<jsp:include page="../header.jsp"/>
 	<sec:authentication property='principal' var='user'/>
-	
 	 <%--메인 컨텐츠 컨테이너 --%>
 	<div class='container font-weight-bold' style ='margin-top:7%; padding-left:8%; padding-right:8%; font-family:Nanum Pen Script;'>
 		<div class='row' style='margin-bottom:4%'>
@@ -71,7 +70,7 @@
 			
 			<div class="form-group">
 			  <label>내 용</label>
-			  <textarea name='content' id="ir1" rows="10" cols="135" ></textarea>
+			  <textarea name='content' id="ir1" rows="10" cols="135"></textarea>
 			</div>
 		
 			<button type="submit" class="btn btn-outline-secondary btn-lg" style="float:right" >등록하기</button>		
@@ -87,7 +86,6 @@
 	</div>
 	
 <script>
-	
 	$(document).ready(function(){
 		// 공통 변수 ------------------------------------------------------------------------
 			var mno = '<c:out value="${pageInfo.mno}"/>';
@@ -99,12 +97,7 @@
 		
 		// 에디터 자바 스크립트----------------------------------------------------------------
 		
-		nhn.husky.EZCreator.createInIFrame({
-			oAppRef: oEditors,
-			elPlaceHolder:"ir1",
-			sSkinURI: "/resources/editor/SmartEditor2Skin.html",
-			fCreator: "createSEditor2"
-		});	
+		CKEDITOR.replace('ir1',{height : 500});
 					
 		
 		
@@ -146,9 +139,13 @@
 				return true;
 			}
 			
-			oEditors.getById["ir1"].exec("UPDATE_CONTENTS_FIELD", []);
-			var textArea = $("#ir1").val();
-			if(textArea == "<p><br></p>"){
+			CKEDITOR.instances.ir1.updateElement();
+			
+			var textArea = $("#ir1").val()+"";
+			
+			ImgInfo(textArea);
+			
+			if(!textArea){
 				alert("본문을 입력하세요!");
 				return true;
 			}
@@ -158,6 +155,50 @@
 				return true;
 			}
 		};	
+		//---------------------------------------------------------------------------------
+		
+		// 이미지 업로드시 데이터 추가---------------------------------------------------------------
+			
+		function ImgInfo(text){
+			
+			var textArr = new Array();
+			
+			for(var i=0; text.indexOf("src=\"") != -1; i++){
+				
+				var indexS = text.indexOf("src=\"");
+				var indexF = text.indexOf("\"",indexS+5) +1;
+				
+				var str = text.substring(indexS,indexF);
+				textArr[i] = str;
+				text = text.substring(indexF);
+			}
+			
+			var inputStr ="";
+			
+			for(var i=0; i<textArr.length; i++){
+				
+				var indexS = textArr[i].indexOf("fileName");
+				var indexF = textArr[i].indexOf("&",indexS);
+				
+				var fileName =textArr[i].substring(indexS+9,indexF);
+				
+				var uuid = fileName.substring(0,fileName.indexOf("_"));
+				var originName = fileName.substring(fileName.indexOf("_")+1);
+				
+				inputStr += "<input type='hidden' name='imgList["+i+"].uuid' value='"+uuid+"'/>";
+				inputStr += "<input type='hidden' name='imgList["+i+"].fileName' value='"+originName+"'/>";
+				
+				indexS = indexF;
+				indexF = textArr[i].indexOf("\"",indexS);
+				
+				var uploadPath = textArr[i].substring(indexS+16,indexF);
+				
+				inputStr += "<input type='hidden' name='imgList["+i+"].uploadPath' value='"+uploadPath+"'/>";
+			}
+			console.log(inputStr);
+			
+			$(".actionForm").append(inputStr);
+		}
 		//---------------------------------------------------------------------------------
 		
 	});

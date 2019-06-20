@@ -92,41 +92,4 @@ public class SummaryController {
 		return result;
 	}
 	
-	@GetMapping("/display2")
-	@ResponseBody
-	public ResponseEntity<byte[]> sendTrailer2(WebRequest req,HttpServletResponse res){
-		
-		int index = req.getHeader("Range").indexOf("-");
-		int start = Integer.parseInt(req.getHeader("Range").substring(6, index));
-		log.info(start);
-		
-		File file = new File("D:\\upload\\preview.mp4");
-		try {
-			RandomAccessFile raf = new RandomAccessFile(file,"rwd");
-			raf.seek(start);
-			int read=0;
-		
-			while((read = raf.read(new byte[1024]))!= -1) {
-				
-			}
-			byte[] brr = intTobyte(read);
-			return new ResponseEntity<byte[]>(brr,HttpStatus.OK);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	private byte[] intTobyte(int integer) {
-		 
-		ByteBuffer buff = ByteBuffer.allocate(Integer.SIZE/8);
-		buff.order(ByteOrder.BIG_ENDIAN);
- 
-		buff.putInt(integer);
- 
-		System.out.println("intTobyte : " + buff);
-		return buff.array();
-	}
 }

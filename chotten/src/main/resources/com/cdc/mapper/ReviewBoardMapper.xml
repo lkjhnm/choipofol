@@ -18,8 +18,13 @@
 	</select>
 	
 	<insert id="register">
+	
+		<selectKey keyProperty="rvno" resultType="java.lang.Long" order="BEFORE">
+			select REVIEW_SEQ.nextval from dual
+		</selectKey>
+	
 	insert into chotten_review (rvno, title, content, writer, mno, reviewlike)  
-	values (review_seq.nextVal, #{title}, #{content}, #{writer}, #{mno}, #{reviewlike})
+	values (#{rvno}, #{title}, #{content}, #{writer}, #{mno}, #{reviewlike})
 	</insert>
 	
 	<select id="getReview" resultType="com.cdc.domain.ReviewVO">
@@ -34,4 +39,22 @@
 	delete from chotten_review where rvno = #{rvno}
 	</delete>
 	
+
+	
+	<insert id="upload">
+	insert all 
+	<foreach collection="imgList" item="item">
+	into CHOTTEN_REVIEW_IMG (uuid,fileName, uploadPath, rvno)	
+	values  (#{item.uuid}, #{item.fileName},#{item.uploadPath} ,#{item.rvno})
+	</foreach>
+	select * from dual
+	</insert>
+	
+	<delete id="deleteImg">
+	delete CHOTTEN_REVIEW_IMG where rvno = #{rvno}
+	</delete>
+	
+	<select id="cleanList" resultType="com.cdc.domain.ReviewImgDTO">
+	select uuid, uploadpath, filename, rvno from chotten_review_img where uploadPath = concat('D:/upload/', to_char(sysdate-#{num},'yyyy/MM/dd'))
+	</select>
 </mapper>

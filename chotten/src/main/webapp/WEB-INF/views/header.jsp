@@ -13,7 +13,7 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-<script src="/resources/editor/js/service/HuskyEZCreator.js" charset="utf-8"></script>
+<script src="/resources/ckeditor/ckeditor.js" charset="utf-8"></script>
 <style>
 .header{	
 	font-size : 20px;
@@ -113,6 +113,7 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
   		$("input").attr("autocomplete","off");
   		
   		$("#logout").on("click",function(){
+  			history.replaceState("","","/");
   			location.href="/customLogout";
   		});
   		
@@ -126,7 +127,7 @@ integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28an
   				}
   			})
   		});
-	  	
+  		
   	});
 	
 	
